@@ -12,7 +12,8 @@ app = Flask(__name__)
 @views.route('/', methods=['GET', 'POST'])
 @login_required
 def home():
-        entries = IncomeExpenses.query.order_by(IncomeExpenses.date.desc()).all()
+        entries = IncomeExpenses.query.filter_by(user_id = current_user.id).order_by(IncomeExpenses.date.desc()).all()
+
         return render_template("home.html", user=current_user, entries = entries)
 
 
@@ -31,7 +32,7 @@ def add_expense():
         elif category == '':
             flash('Please enter a valid category', category='error')
         else:
-            entry = IncomeExpenses(amount=amount, type=type, category=category)
+            entry = IncomeExpenses(amount=amount, type=type, category=category, user_id=current_user.id)
             db.session.add(entry)
             db.session.commit()
             flash('Income expenses added successfully')
@@ -55,11 +56,11 @@ def delete():
 @views.route('/dashboard')
 @login_required
 def dashboard():
-    income_vs_expense = db.session.query(db.func.sum(IncomeExpenses.amount), IncomeExpenses.type).group_by(IncomeExpenses.type).order_by(IncomeExpenses.type).all()
+    income_vs_expense = db.session.query(db.func.sum(IncomeExpenses.amount), IncomeExpenses.type).filter_by(user_id = current_user.id).group_by(IncomeExpenses.type).order_by(IncomeExpenses.type).all()
 
-    category_comparison = db.session.query(db.func.sum(IncomeExpenses.amount), IncomeExpenses.category).group_by(IncomeExpenses.category).order_by(IncomeExpenses.category).all()
+    category_comparison = db.session.query(db.func.sum(IncomeExpenses.amount), IncomeExpenses.category).filter_by(user_id = current_user.id).group_by(IncomeExpenses.category).order_by(IncomeExpenses.category).all()
 
-    dates = db.session.query(db.func.sum(IncomeExpenses.amount), IncomeExpenses.date).group_by(IncomeExpenses.date).order_by(IncomeExpenses.date).all()
+    dates = db.session.query(db.func.sum(IncomeExpenses.amount), IncomeExpenses.date).filter_by(user_id = current_user.id).group_by(IncomeExpenses.date).order_by(IncomeExpenses.date).all()
 
 
     income_category = []
