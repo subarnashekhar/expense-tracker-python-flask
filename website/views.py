@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask import Flask
 from flask_login import login_required, current_user
-from .models import Note, IncomeExpenses
+from .models import IncomeExpenses
 from . import db
 import json
 
@@ -59,9 +59,6 @@ def dashboard():
 
     dates = db.session.query(db.func.sum(IncomeExpenses.amount), IncomeExpenses.date).group_by(IncomeExpenses.date).order_by(IncomeExpenses.date).all()
 
-    app.logger.info(income_vs_expense)
-    app.logger.info(category_comparison)
-    app.logger.info(dates)
 
     income_category = []
     for amounts, _ in category_comparison:
