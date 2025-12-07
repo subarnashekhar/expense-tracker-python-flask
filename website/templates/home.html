@@ -21,7 +21,7 @@
                             <td>{{entry.type}}</td>
                             <td>{{ entry.category }}</td>
                             <td>{{ entry.amount }}</td>
-                            <td><a href="{{ url_for('views.delete', entry_id = entry.id) }}" class="btn btn-outline-danger btn-sm">Delete</a></td>
+                            <td><div class="btn btn-outline-danger btn-sm" onClick="deleteIncomeExpense({{ entry.id }})">Delete</div></td>
                         </tr>
                 {% endfor %}
         </tbody>

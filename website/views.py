@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for
+from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify
 from flask import Flask
 from flask_login import login_required, current_user
 from .models import IncomeExpenses
@@ -39,14 +39,16 @@ def add_expense():
 
     return render_template("add.html", user=current_user)
 
-@views.route('/delete-post/<int:entry_id>')
+@views.route('/delete-post', methods=['POST'])
 @login_required
-def delete(entry_id):
-    entry = IncomeExpenses.query.get_or_404(int(entry_id))
+def delete():
+    entry = json.loads(request.data)
+    entryId = entry['entryId']
+    entry = IncomeExpenses.query.get_or_404(int(entryId))
     db.session.delete(entry)
     db.session.commit()
     flash("Entry deleted", "success")
-    return redirect(url_for('views.home'), user=current_user)
+    return jsonify({})
 
 
 
